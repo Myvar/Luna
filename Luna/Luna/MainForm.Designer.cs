@@ -32,7 +32,10 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolBar = new System.Windows.Forms.Panel();
             this.MainHost = new System.Windows.Forms.Panel();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
+            this.ToolBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -53,19 +56,38 @@
             // 
             // ToolBar
             // 
+            this.ToolBar.Controls.Add(this.button1);
+            this.ToolBar.Controls.Add(this.textBox1);
             this.ToolBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.ToolBar.Location = new System.Drawing.Point(0, 24);
             this.ToolBar.Name = "ToolBar";
-            this.ToolBar.Size = new System.Drawing.Size(1223, 66);
+            this.ToolBar.Size = new System.Drawing.Size(1223, 54);
             this.ToolBar.TabIndex = 1;
             // 
             // MainHost
             // 
             this.MainHost.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainHost.Location = new System.Drawing.Point(0, 90);
+            this.MainHost.Location = new System.Drawing.Point(0, 78);
             this.MainHost.Name = "MainHost";
-            this.MainHost.Size = new System.Drawing.Size(1223, 464);
+            this.MainHost.Size = new System.Drawing.Size(1223, 476);
             this.MainHost.TabIndex = 2;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(3, 3);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(1217, 20);
+            this.textBox1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1145, 25);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "GO";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
@@ -81,6 +103,8 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.ToolBar.ResumeLayout(false);
+            this.ToolBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -92,5 +116,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.Panel ToolBar;
         private System.Windows.Forms.Panel MainHost;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
