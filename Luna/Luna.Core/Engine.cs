@@ -9,6 +9,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using System.IO;
+using Luna.Core.Internal.Lib;
 
 namespace Luna.Core
 {
@@ -64,11 +65,20 @@ namespace Luna.Core
             compiled.Execute(pyScope);
         }
 
-
+      
         public void InvokeMain()
         {
+            //add lib
+            //varables
+            User u = new User();
+
+            //adding
+            pyScope.SetVariable("User", u);
+
+            //add main variables
             pyScope.SetVariable("MainForm", Host);
-            string baceCode = "import clr\nclr.AddReference('System.Windows.Forms')\n";
+
+            string baceCode = "import clr\nclr.AddReference('System.Windows.Forms')\nclr.AddReference('System')\n";
 
             CompileSourceAndExecute(baceCode + MainCode);    
             
