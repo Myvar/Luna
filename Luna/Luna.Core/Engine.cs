@@ -60,7 +60,7 @@ namespace Luna.Core
             var sh = Wc.DownloadString(url + "Main.html");
             MainCode = s;
             MainHtml = sh;
-
+            NameSpaceList.Add("System.Windows.Forms");
         }
 
         private void CompileSourceAndExecute(String code)
@@ -72,78 +72,156 @@ namespace Luna.Core
             compiled.Execute(pyScope);
         }
 
+        public static List<string> NameSpaceList = new List<string>();
+
+        public static List<Assembly> includdlls = new List<Assembly>();
+
+        public static string[] tokens = "b03f5f7f11d50a3a~b77a5c561934e089".Split('~');
+
+        public static Type GetTypeOfControl(string myclass1, String mymethod)
+        {
+            Type mymethoda = null;
+            string myclass = myclass1;
+            string myclass11 = myclass1;
+            string np1 = "";
+            try
+            {
+                Boolean donpttry = true;
+                foreach (string i in myclass1.Split('.'))
+                {
+                    foreach (string ii in myclass1.Split('.'))
+                    {
+                        if (NameSpaceList.Contains(i + "." + ii))
+                        {
+                            donpttry = false;
+                            np1 = i + "." + ii;
+                            break;
+                        }
+                    }
+                }
+                foreach (string np in NameSpaceList)
+                {
+                    myclass = myclass11;
+                    if (!donpttry)
+                    {
+                        break;
+                    }
+
+                    //  myclass;
+                    foreach (string i in tokens)
+                    {
+                        if (mymethoda == null)
+                        {
+                            mymethoda =
+                                Type.GetType(
+                                    np + "." + myclass1 + ", " + np
+                                    + ", Version=4.0.0.0, Culture=neutral, PublicKeyToken=" + i);
+                        }
+                    }
+                    if (mymethoda == null)
+                    {
+                        mymethoda = Type.GetType(np + "." + myclass1);
+                    }
+                    if (mymethoda == null)
+                    {
+                        foreach (Assembly i in includdlls)
+                        {
+                            if (mymethoda == null)
+                            {
+                                mymethoda = i.GetType(np + "." + myclass1);
+                            }
+                        }
+                    }
+                    if (mymethoda == null)
+                    {
+                        myclass = np + "." + myclass;
+                        mymethoda = typeof(int).Assembly.GetType(myclass.Split('.')[0] + "." + myclass.Split('.')[1]);
+                    }
+                    if (mymethoda != null)
+                    {
+                        break;
+                    }
+                }
+                if (!donpttry)
+                {
+                    mymethoda =
+                        Type.GetType(
+                            myclass1 + ", " + np1
+                            + ", Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+
+                    if (mymethoda == null)
+                    {
+                        mymethoda = Type.GetType(myclass1);
+                    }
+
+                    if (mymethoda == null)
+                    {
+                        myclass = myclass;
+                        mymethoda = typeof(int).Assembly.GetType(myclass.Split('.')[0] + "." + myclass.Split('.')[1]);
+                    }
+                }
+                if (mymethoda == null)
+                {
+                    foreach (Assembly i in includdlls)
+                    {
+                        if (mymethoda == null)
+                        {
+                            mymethoda = i.GetType(myclass1);
+                        }
+                    }
+                }
+                if (mymethoda != null)
+                {
+                    return mymethoda;
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
+
         private void LoadHTML()
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(MainHtml);
             foreach (XmlNode i in doc.DocumentElement.ChildNodes)
             {
-                switch (i.Name)
+                if (i.Attributes["Name"] != null)
                 {
-                    case "Button":                        
-                        if (i.Attributes["Name"] != null)
+
+                    Control b = (Control)Activator.CreateInstance(GetTypeOfControl(i.Name, i.Name));
+                    //  b.Name = i.Attributes["Name"].Value;
+                    foreach (var d in i.Attributes)
+                    {
+                        var s = (XmlAttribute)d;
+                        PropertyInfo prop = b.GetType().GetProperty(s.Name, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
                         {
-                            Button b = new Button();
-                          //  b.Name = i.Attributes["Name"].Value;
-                            foreach(var d in i.Attributes)
+                            try
                             {
-                                var s = (XmlAttribute)d;
-                                PropertyInfo prop = b.GetType().GetProperty(s.Name, BindingFlags.Public | BindingFlags.Instance);
-                                if (null != prop && prop.CanWrite)
+                                prop.SetValue(b, Convert.ChangeType(s.Value, prop.PropertyType), null);
+                            }
+                            catch (Exception e)
+                            {
+                                if (s.Name == "Location")
                                 {
-                                    try
-                                    {
-                                        prop.SetValue(b, Convert.ChangeType(s.Value, prop.PropertyType), null);
-                                    }
-                                    catch(Exception e)
-                                    {
-                                        if(s.Name == "Location")
-                                        {
-                                            string[] s1 = s.Value.Split(',');
-                                            b.Location = new System.Drawing.Point(int.Parse(s1[0]),int.Parse( s1[1]));
-                                        }
-                                    }
+                                    string[] s1 = s.Value.Replace(" ", "").Split(',');
+                                    b.Location = new System.Drawing.Point(int.Parse(s1[0]), int.Parse(s1[1]));
                                 }
                             }
-
-
-                            pyScope.SetVariable(i.Attributes["Name"].Value, b);
-                            Host.Controls.Add(b);
                         }
-                        break;
-                    case "TextBox":
-                        if (i.Attributes["Name"] != null)
-                        {
-                            TextBox b = new TextBox();
-                            //  b.Name = i.Attributes["Name"].Value;
-                            foreach (var d in i.Attributes)
-                            {
-                                var s = (XmlAttribute)d;
-                                PropertyInfo prop = b.GetType().GetProperty(s.Name, BindingFlags.Public | BindingFlags.Instance);
-                                if (null != prop && prop.CanWrite)
-                                {
-                                    try
-                                    {
-                                        prop.SetValue(b, Convert.ChangeType(s.Value, prop.PropertyType), null);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        if (s.Name == "Location")
-                                        {
-                                            string[] s1 = s.Value.Split(',');
-                                            b.Location = new System.Drawing.Point(int.Parse(s1[0]), int.Parse(s1[1]));
-                                        }
-                                    }
-                                }
-                            }
+                    }
 
 
-                            pyScope.SetVariable(i.Attributes["Name"].Value, b);
-                            Host.Controls.Add(b);
-                        }
-                        break;
-
+                    pyScope.SetVariable(i.Attributes["Name"].Value, b);
+                    Host.Controls.Add(b);
                 }
+
+
+
             }
 
         }
