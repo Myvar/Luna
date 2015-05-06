@@ -23,7 +23,7 @@ namespace Luna
         private void MainForm_Load(object sender, EventArgs e)
         {
             en = new Engine(MainHost);
-            en.OpenApp("http://myvar.org/LunaTesting/");
+            en.OpenApp("http://myvarhd.github.io/Luna/");
             en.InvokeMain();
 
             

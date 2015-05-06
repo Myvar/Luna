@@ -13,6 +13,7 @@ using Luna.Core.Internal.Lib;
 using System.Xml;
 using System.Xml.Linq;
 using System.Reflection;
+using System.Drawing;
 
 
 namespace Luna.Core
@@ -77,6 +78,8 @@ namespace Luna.Core
         public static List<Assembly> includdlls = new List<Assembly>();
 
         public static string[] tokens = "b03f5f7f11d50a3a~b77a5c561934e089".Split('~');
+
+        #region HugeUglyPeacOfCode
 
         public static Type GetTypeOfControl(string myclass1, String mymethod)
         {
@@ -181,7 +184,7 @@ namespace Luna.Core
 
             return null;
         }
-
+#endregion
 
         private void LoadHTML()
         {
@@ -198,10 +201,14 @@ namespace Luna.Core
                     {
                         var s = (XmlAttribute)d;
                         PropertyInfo prop = b.GetType().GetProperty(s.Name, BindingFlags.Public | BindingFlags.Instance);
-                        if (null != prop && prop.CanWrite)
-                        {
+                      
                             try
                             {
+
+                                if (s.Name == "Color")
+                                {
+                                    throw new NotImplementedException();
+                                }
                                 prop.SetValue(b, Convert.ChangeType(s.Value, prop.PropertyType), null);
                             }
                             catch (Exception e)
@@ -211,8 +218,13 @@ namespace Luna.Core
                                     string[] s1 = s.Value.Replace(" ", "").Split(',');
                                     b.Location = new System.Drawing.Point(int.Parse(s1[0]), int.Parse(s1[1]));
                                 }
+                                if (s.Name == "Color")
+                                {
+                                    
+                                    b.BackColor = Color.FromName(s.Value);
+                                }
                             }
-                        }
+                        
                     }
 
 
